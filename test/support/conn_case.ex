@@ -25,6 +25,7 @@ defmodule BrambleChallengeWeb.ConnCase do
       import BrambleChallengeWeb.ConnCase
 
       alias BrambleChallengeWeb.Router.Helpers, as: Routes
+      alias BrambleChallenge.Repo
 
       # The default endpoint for testing
       @endpoint BrambleChallengeWeb.Endpoint
