@@ -11,6 +11,7 @@ defmodule BrambleChallenge.Accounts.UserToken do
   @confirm_validity_in_days 7
   @change_email_validity_in_days 7
   @session_validity_in_days 60
+  @api_access_max_age 86400
 
   schema "accounts_users_tokens" do
     field :token, :binary
@@ -177,5 +178,39 @@ defmodule BrambleChallenge.Accounts.UserToken do
   def user_and_contexts_query(user, [_ | _] = contexts) do
     from t in BrambleChallenge.Accounts.UserToken,
       where: t.user_id == ^user.id and t.context in ^contexts
+  end
+
+  @doc """
+  Build a access token
+  TODO - add doc.
+  """
+  def build_access_token(user) do
+    token =
+      Phoenix.Token.sign(BrambleChallengeWeb.Endpoint, "user_auth", user.id,
+        max_age: @api_access_max_age
+      )
+
+    {token, %BrambleChallenge.Accounts.UserToken{token: token, context: "api", user_id: user.id}}
+  end
+
+  @doc """
+  TODO - add doc.
+  """
+  def verify_access_token(token) do
+    Phoenix.Token.verify(
+      BrambleChallengeWeb.Endpoint,
+      "user_auth",
+      token,
+      max_age: @api_access_max_age
+    )
+  end
+
+  @doc """
+  TODO - add doc.
+  """
+  def access_token_query(user, context) do
+    BrambleChallenge.Accounts.UserToken
+    |> where([t], t.inserted_at > ago(@api_access_max_age, "second"))
+    |> where([t], t.user_id == ^user.id and t.context == ^context)
   end
 end

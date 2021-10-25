@@ -7,8 +7,18 @@ defmodule BrambleChallenge.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :api_request, :integer
 
     timestamps()
+  end
+
+  @user_fields ~w(email password confirmed_at api_request)a
+
+  def changeset(%__MODULE__{} = user, attrs \\ %{}) do
+    user
+    |> cast(attrs, @user_fields)
+    |> validate_email()
+    |> validate_password(hash_password: true)
   end
 
   @doc """

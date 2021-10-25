@@ -347,4 +347,41 @@ defmodule BrambleChallenge.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  def find_or_insert_access_token(user) do
+    access_token_query = UserToken.access_token_query(user, "api")
+
+    case Repo.one(access_token_query) do
+      nil ->
+        {token, user_token} = UserToken.build_access_token(user)
+        Repo.insert!(user_token)
+
+        {:ok, token}
+
+      %UserToken{} = user_token ->
+        {:ok, user_token.token}
+    end
+  end
+
+  defdelegate verify_access_token(token), to: UserToken
+
+  @doc """
+  Update user api request count by 1.
+  """
+  def update_user_api_request(user_id) do
+    query = from u in User, where: u.id == ^user_id, select: u.api_request
+
+    Repo.update_all(query, inc: [api_request: 1])
+  end
+
+  @doc """
+  Returns a list of top 3 users by api usage.
+  """
+  def list_top_users_by_api_request do
+    User
+    |> order_by([u], desc: u.api_request)
+    |> select([u], %{email: u.email, api_request: u.api_request})
+    |> limit(3)
+    |> Repo.all()
+  end
 end

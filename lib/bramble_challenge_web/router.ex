@@ -88,4 +88,11 @@ defmodule BrambleChallengeWeb.Router do
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
   end
+
+  scope "/api", BrambleChallengeWeb.API, as: :api do
+    pipe_through [:api]
+
+    post "/auth/token", UserRequestController, :create
+    post "/user-requests", UserRequestController, :index
+  end
 end

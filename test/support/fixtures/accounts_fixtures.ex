@@ -4,6 +4,9 @@ defmodule BrambleChallenge.AccountsFixtures do
   entities via the `BrambleChallenge.Accounts` context.
   """
 
+  alias BrambleChallenge.Repo
+  alias BrambleChallenge.Accounts.User
+
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "hello world!"
 
@@ -19,6 +22,19 @@ defmodule BrambleChallenge.AccountsFixtures do
       attrs
       |> valid_user_attributes()
       |> BrambleChallenge.Accounts.register_user()
+
+    user
+  end
+
+  def insert_user(attrs \\ %{}) do
+    attrs =
+      attrs
+      |> valid_user_attributes()
+
+    {:ok, user} =
+      %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert()
 
     user
   end
