@@ -380,7 +380,7 @@ defmodule BrambleChallenge.Accounts do
   def list_top_users_by_api_request do
     User
     |> order_by([u], desc: u.api_request)
-    |> select([u], %{email: u.email, api_request: u.api_request})
+    |> select([u], %{id: u.id, email: u.email, api_request: u.api_request})
     |> limit(3)
     |> Repo.all()
   end

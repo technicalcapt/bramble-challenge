@@ -6,8 +6,19 @@ defmodule BrambleChallengeWeb.API.UserRequestController do
   plug :basic_auth when action in [:create]
   plug :bearer_auth when action in [:index]
 
+  @user_request_topic "incoming-user-request"
+
   def index(%{assigns: %{user_id: user_id}} = conn, _params) do
     {_updates, _selected} = Accounts.update_user_api_request(user_id)
+
+    Phoenix.PubSub.broadcast!(
+      BrambleChallenge.PubSub,
+      @user_request_topic,
+      :update_user_request
+    )
+
+    # Maybe we should rescue in case of raise/ unmatch error.
+
     users = Accounts.list_top_users_by_api_request()
 
     conn

@@ -1,0 +1,39 @@
+<div class="bg-white py-16 px-64 w-full">
+  <div class="my-6">
+    <h3 class="font-semibold text-2xl">Users requests</h3>
+    <input
+      id="search-input"
+      autocomplete="off"
+      type="text"
+      phx-keyup="search"
+      placeholder="Start typing to search"
+      class="border border-gray-500 rounded px-3 py-1 w-1/2">
+  </div>
+  <div class="">
+    <!-- Table list -->
+    <div class="shadow-md border border-gray-200 rounded-md">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr class="flex justify-between px-6 uppercase text-gray-700">
+            <th>Id</th>
+            <th><%= live_sort_link("Email", @socket, @search_params, :email) %></th>
+            <th><%= live_sort_link("API request count", @socket, @search_params, :api_request) %></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <%= for user <- @page.entries do %>
+            <tr class="flex justify-between px-6">
+              <td><%= user.id %></td>
+              <td><%= user.email %></td>
+              <td><%= user.api_request %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex justify-center mt-6">
+      <%= pagination(@page, @page_path_func) %>
+    </div>
+  </div>
+</div>
