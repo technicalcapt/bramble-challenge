@@ -3,7 +3,7 @@ ARG MIX_ENV="prod"
 FROM hexpm/elixir:1.11.2-erlang-23.1.2-alpine-3.12.1 as build
 
 # install build dependencies
-RUN apk add --no-cache build-base git python3 curl
+RUN apk add --no-cache build-base git python3 curl npm
 
 # prepare build dir
 WORKDIR /app
@@ -34,6 +34,7 @@ COPY priv priv
 # your Elixir templates, you will need to move the asset compilation
 # step down so that `lib` is available.
 COPY assets assets
+RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 RUN mix assets.deploy
 
 # compile and build the release
@@ -72,7 +73,7 @@ USER "${USER}"
 
 COPY --from=build --chown="${USER}":"${USER}" /app/_build/"${MIX_ENV}"/rel/bramble_challenge ./
 
-ENTRYPOINT ["./docker-entrypoint.sh", "bin/bramble_challenge"]
+ENTRYPOINT ["bin/bramble_challenge"]
 
 # Usage:
 #  * build: sudo docker image build -t elixir/bramble_challenge .
