@@ -95,4 +95,10 @@ defmodule BrambleChallengeWeb.Router do
     post "/auth/token", UserRequestController, :create
     post "/user-requests", UserRequestController, :index
   end
+
+  scope "/", BrambleChallengeWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live "/users/requests", UserRequestLive
+  end
 end
