@@ -8,6 +8,7 @@ To start your Phoenix server on local:
   * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+Repeat step 5 6 7 in the below guidance with `localhost:4000` instead of `localhost:4001`
 
 # How to run project with docker
 
@@ -25,7 +26,7 @@ You can generate secret key by running: `mix phx.gen.secret`
 ```
 4. Navigate to localhost:4001 in the browser
 5. Start registering an user at `http://localhost:4001/users/register`
-6. You can navigate to live_view page at `http://localhost:4000/users/requests`
+6. You can navigate to live_view page at `http://localhost:4001/users/requests`
 7. Test out API after you has registered an user.
 Get an `access token` with:
 ```
@@ -35,6 +36,13 @@ curl -X POST -H "Content-Type: application/json" -u your_email:password localhos
 Send an API request:
 ```
 curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer your_access_token" localhost:4001/api/user-requests
+```
+
+# Running tests
+
+Run all current test cases with:
+```
+mix test
 ```
 
 
