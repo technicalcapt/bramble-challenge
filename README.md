@@ -1,6 +1,6 @@
 # BrambleChallenge
 
-To start your Phoenix server:
+To start your Phoenix server on local:
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
@@ -8,12 +8,32 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+# How to run project with docker
 
-## Learn more
+1. Install docker (https://docs.docker.com/engine/install/) and docker-compose
+2. Create `.env` file in the root directory and add your environment variable to the following
+```
+DATABASE_URL=postgres://postgres:postgres@db:5432/bramble_challenge_dev
+SECRET_KEY_BASE=YOUR_SECRET_KEY_BASE
+```
+You can generate secret key by running: `mix phx.gen.secret`
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+3. Execute command below in the shell
+```
+`$ docker-compose up
+```
+4. Navigate to localhost:4001 in the browser
+5. Start registering an user at `http://localhost:4001/users/register`
+6. You can navigate to live_view page at `http://localhost:4000/users/requests`
+7. Test out API after you has registered an user.
+Get an `access token` with:
+```
+curl -X POST -H "Content-Type: application/json" -u your_email:password localhost:4001/api/auth/token
+```
+
+Send an API request:
+```
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer your_access_token" localhost:4001/api/user-requests
+```
+
+
