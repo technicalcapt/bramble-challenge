@@ -1,7 +1,6 @@
 defmodule BrambleChallenWeb.UserRequestLiveTest do
   use BrambleChallengeWeb.ConnCase
   import Phoenix.LiveViewTest
-  alias BrambleChallenge.Accounts
 
   @live_view "/users/requests"
 
