@@ -2,6 +2,7 @@ defmodule BrambleChallengeWeb.API.UserRequestController do
   use BrambleChallengeWeb, :controller
   alias BrambleChallenge.Accounts
   alias BrambleChallenge.Accounts.User
+  alias BrambleChallenge.RateLimiter
 
   plug :basic_auth when action in [:create]
   plug :bearer_auth when action in [:index]
@@ -9,21 +10,29 @@ defmodule BrambleChallengeWeb.API.UserRequestController do
   @user_request_topic "incoming-user-request"
 
   def index(%{assigns: %{user_id: user_id}} = conn, _params) do
-    {_updates, _selected} = Accounts.update_user_api_request(user_id)
+    case RateLimiter.log(user_id) do
+      :ok ->
+        {_updates, _selected} = Accounts.update_user_api_request(user_id)
 
-    Phoenix.PubSub.broadcast!(
-      BrambleChallenge.PubSub,
-      @user_request_topic,
-      :update_user_request
-    )
+        Phoenix.PubSub.broadcast!(
+          BrambleChallenge.PubSub,
+          @user_request_topic,
+          :update_user_request
+        )
 
-    # Maybe we should rescue in case of raise/ unmatch error.
+        # Maybe we should rescue in case of raise/ unmatch error.
 
-    users = Accounts.list_top_users_by_api_request()
+        users = Accounts.list_top_users_by_api_request()
 
-    conn
-    |> put_status(:ok)
-    |> json(%{users: users})
+        conn
+        |> put_status(:ok)
+        |> json(%{users: users})
+
+      {:error, :rate_limited} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "API requests have exceeded 5 requests per minute."})
+    end
   end
 
   def create(%{assigns: %{current_user: current_user}} = conn, _params) do

@@ -73,4 +73,6 @@ defmodule BrambleChallengeWeb.API.UserRequestControllerTest do
       assert Enum.map(resp["users"], & &1["api_request"]) == [5, 4, 3]
     end
   end
+
+  # TODO - test rate limiter
 end

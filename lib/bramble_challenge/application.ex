@@ -15,7 +15,8 @@ defmodule BrambleChallenge.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: BrambleChallenge.PubSub},
       # Start the Endpoint (http/https)
-      BrambleChallengeWeb.Endpoint
+      BrambleChallengeWeb.Endpoint,
+      BrambleChallenge.RateLimiter
       # Start a worker by calling: BrambleChallenge.Worker.start_link(arg)
       # {BrambleChallenge.Worker, arg}
     ]
