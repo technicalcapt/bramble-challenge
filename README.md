@@ -24,6 +24,15 @@ You can generate secret key by running: `mix phx.gen.secret`
 ```
 `$ docker-compose up
 ```
+Open up another shell in terminal and start run migrations
+```
+docker-compose exec web bin/bramble_challenge rpc "BrambleChallenge.Release.migrate"
+```
+Seed some demo data
+```
+docker-compose exec web bin/bramble_challenge rpc "BrambleChallenge.Seed.Demo.seed_users"
+```
+
 4. Navigate to localhost:4001 in the browser
 5. Start registering an user at `http://localhost:4001/users/register`
 6. You can navigate to live_view page at `http://localhost:4001/users/requests`
